@@ -1,6 +1,7 @@
 import sys
 from typing import Optional, List, Any, Tuple, Callable
 import pygame
+from prometheus.src.common import Millis
 
 SCREEN_SIZE = (800, 600)  # If this is not a supported resolution, performance takes a big hit
 CAMERA_SIZE = (800, 430)
@@ -25,7 +26,7 @@ class Main:
     def _main_loop(self):
         while True:
             self.clock.tick()
-            
+            time_passed = Millis(self.clock.get_time())
             fps_string = str(int(self.clock.get_fps()))
 
             input_events: List[Any] = pygame.event.get()
