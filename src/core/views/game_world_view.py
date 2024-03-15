@@ -24,3 +24,23 @@ class GameWorldView:
         self.images_by_sprite: Dict[Sprite, Dict[Direction, List[ImageWithRelativePosition]]] = images_by_sprite
 
         self.camera_world_area = None
+    
+    
+    def _translate_world_position_to_screen(self, world_position):
+        return (self._translate_world_x_to_screen(world_position[0]),
+                self._translate_world_y_to_screen(world_position[1]))
+
+    def _translate_screen_position_to_world(self, screen_position):
+        return int(screen_position[0] + self.camera_world_area.x), int(screen_position[1] + self.camera_world_area.y)
+
+    def _translate_world_x_to_screen(self, world_x):
+        return int(world_x - self.camera_world_area.x)
+
+    def _translate_world_y_to_screen(self, world_y):
+        return int(world_y - self.camera_world_area.y)
+
+    def _translate_ui_position_to_screen(self, position):
+        return position[0] + self.ui_screen_area.x, position[1] + self.ui_screen_area.y
+
+    def _translate_screen_position_to_ui(self, position: Tuple[int, int]):
+        return position[0] - self.ui_screen_area.x, position[1] - self.ui_screen_area.y

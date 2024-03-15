@@ -5,6 +5,7 @@ import pygame
 
 from src.core.common import Millis
 from src.core.game_data import ENTITY_SPRITE_INITIALIZERS
+from src.core.views.game_ui_view import GameUiView
 from src.core.views.game_world_view import GameWorldView
 from src.core.views.image_loading import load_images_by_sprite
 from src.core.scenes.abstract_scene import AbstractScene, SceneTransition
@@ -15,7 +16,7 @@ SCREEN_SIZE = (800, 600)  # If this is not a supported resolution, performance t
 CAMERA_SIZE = (800, 430)
 
 class Main:
-    def __init__(self, map_file_name: Optional[str], fullscreen: bool):
+    def __init__(self, fullscreen: bool):
         
         pygame.init()
 
@@ -25,6 +26,7 @@ class Main:
         images_by_sprite = load_images_by_sprite(ENTITY_SPRITE_INITIALIZERS)
         
         self.world_view = GameWorldView(self.pygame_screen, CAMERA_SIZE, SCREEN_SIZE, images_by_sprite)
+        self.ui_view = GameUiView()
 
         self.clock = pygame.time.Clock()
 
@@ -43,7 +45,7 @@ class Main:
         while True:
             self.clock.tick()
             time_passed = Millis(self.clock.get_time())
-            fps_string = str(int(self.clock.get_fps()))
+            #fps_string = str(int(round(self.clock.get_fps())))
 
             input_events: List[Any] = pygame.event.get()
             for event in input_events:
@@ -75,6 +77,9 @@ class Main:
         self.scene.on_enter()
 
 
-def start(map_file_name: Optional[str], fullscreen: bool):
-    main = Main(map_file_name, fullscreen)
+def start(fullscreen: bool):
+    main = Main(fullscreen)
     main.main_loop()
+
+if __name__ == "__main__":
+    start(fullscreen=False)
