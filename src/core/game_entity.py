@@ -3,7 +3,7 @@ from typing import Tuple, Optional
 from pygame.rect import Rect
 
 from src.core.id_types import GameId
-from src.common import Sprite, Direction, Observable
+from src.core.common import Sprite, Direction, Observable
 
 class WorldEntity:
     def __init__(self, id:GameId, pos: Tuple[int, int], size: Tuple[int, int], sprite: Sprite, direction=Direction.LEFT, speed:int=0):

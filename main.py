@@ -1,7 +1,12 @@
 import sys
 from typing import Optional, List, Any
+
 import pygame
-from src.common import Millis
+
+from src.core.common import Millis
+from src.core.game_data import ENTITY_SPRITE_INITIALIZERS
+from src.core.views.game_world_view import GameWorldView
+from src.core.views.image_loading import load_images_by_sprite
 
 SCREEN_SIZE = (800, 600)  # If this is not a supported resolution, performance takes a big hit
 CAMERA_SIZE = (800, 430)
@@ -13,6 +18,8 @@ class Main:
 
         self.fullscreen = fullscreen
         self.pygame_screen = self.setup_screen()
+        images_by_sprite = load_images_by_sprite(ENTITY_SPRITE_INITIALIZERS)
+        self.world_view = GameWorldView(self.pygame_screen, CAMERA_SIZE, SCREEN_SIZE, images_by_sprite)
 
         self.clock = pygame.time.Clock()
 

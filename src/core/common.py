@@ -1,6 +1,6 @@
 
 from enum import Enum
-from typing import NewType, Optional, Any, List, Callable, Union, Tuple
+from typing import NewType, Any, List, Callable
 
 Millis = NewType('Millis', int)
 
