@@ -1,7 +1,7 @@
 import sys
-from typing import Optional, List, Any, Tuple, Callable
+from typing import Optional, List, Any
 import pygame
-from prometheus.src.common import Millis
+from src.common import Millis
 
 SCREEN_SIZE = (800, 600)  # If this is not a supported resolution, performance takes a big hit
 CAMERA_SIZE = (800, 430)
