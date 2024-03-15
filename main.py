@@ -7,6 +7,9 @@ from src.core.common import Millis
 from src.core.game_data import ENTITY_SPRITE_INITIALIZERS
 from src.core.views.game_world_view import GameWorldView
 from src.core.views.image_loading import load_images_by_sprite
+from src.core.scenes.abstract_scene import AbstractScene, SceneTransition
+from src.core.scenes.scene_factory import SceneFactory
+from src.core.scenes.create_world_scene import CreatingWorldScene
 
 SCREEN_SIZE = (800, 600)  # If this is not a supported resolution, performance takes a big hit
 CAMERA_SIZE = (800, 430)
@@ -18,10 +21,16 @@ class Main:
 
         self.fullscreen = fullscreen
         self.pygame_screen = self.setup_screen()
+
         images_by_sprite = load_images_by_sprite(ENTITY_SPRITE_INITIALIZERS)
+        
         self.world_view = GameWorldView(self.pygame_screen, CAMERA_SIZE, SCREEN_SIZE, images_by_sprite)
 
         self.clock = pygame.time.Clock()
+
+        self.scene_factory = SceneFactory(self.pygame_screen, self.ui_view, self.world_view, self.toggle_fullscreen, CAMERA_SIZE)
+
+        self.scene: AbstractScene = CreatingWorldScene(self.scene_factory)
 
     def main_loop(self):
         try:
@@ -61,7 +70,8 @@ class Main:
         pygame.quit()
         sys.exit()
 
-    def change_scene(self):
+    def change_scene(self, scene_transition: SceneTransition):
+        self.scene = scene_transition.scene
         self.scene.on_enter()
 
 
