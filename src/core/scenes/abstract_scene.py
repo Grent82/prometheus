@@ -1,6 +1,9 @@
 from typing import List, Any, Optional
 
 from src.core.common import Millis
+from src.core.game_engine import GameEngine
+from src.core.states.game_state import GameState
+from src.core.views.game_ui_view import GameUiView
 
 class SceneTransition:
     # scene: AbstractScene
@@ -23,4 +26,7 @@ class AbstractSceneFactory:
         raise Exception("Not implemented")
 
     def world_scene(self) -> AbstractScene:
+        raise Exception("Not implemented")
+    
+    def playing_scene(self, game_state: GameState, game_engine: GameEngine, ui_view: GameUiView) -> AbstractScene:
         raise Exception("Not implemented")

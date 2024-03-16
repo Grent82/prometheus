@@ -32,7 +32,7 @@ class Main:
 
         self.scene_factory = SceneFactory(self.pygame_screen, self.ui_view, self.world_view, self.toggle_fullscreen, CAMERA_SIZE)
 
-        self.scene: AbstractScene = CreatingWorldScene(self.scene_factory)
+        self.scene: AbstractScene = CreatingWorldScene(self.scene_factory, CAMERA_SIZE, self.ui_view)
 
     def main_loop(self):
         try:
@@ -53,6 +53,16 @@ class Main:
                     self.quit_game()
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE and self.fullscreen:
                     self.toggle_fullscreen()
+
+            transition: Optional[SceneTransition] = self.scene.handle_user_input(input_events)
+            if transition:
+                self.change_scene(transition)
+                continue
+
+            transition: Optional[SceneTransition] = self.scene.run_one_frame(time_passed)
+            if transition:
+                self.change_scene(transition)
+                continue
 
             self.scene.render()
             pygame.display.update()
