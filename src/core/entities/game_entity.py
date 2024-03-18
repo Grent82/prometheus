@@ -25,3 +25,7 @@ class WorldEntity:
         #self.is_moving = is_moving # optional
         #self.is_thinking = is_thinking # optional
         #self.is_speaking = is_speaking # optional
+
+
+    def check_collision(self, otherRect: Rect):
+        self.pygame_collision_rect.colliderect(otherRect)

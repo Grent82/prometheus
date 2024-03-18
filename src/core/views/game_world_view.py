@@ -6,7 +6,7 @@ from pygame.rect import Rect
 
 from src.core.common import Sprite, Direction
 from src.core.game_data import ENTITY_SPRITE_INITIALIZERS
-from src.core.game_entity import WorldEntity
+from src.core.entities.game_entity import WorldEntity
 from src.core.views.image_loading import ImageWithRelativePosition
 from src.core.views.render_util import DrawableArea
 

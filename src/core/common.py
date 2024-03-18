@@ -3,6 +3,9 @@ from enum import Enum
 from typing import NewType, Any, List, Callable
 
 Millis = NewType('Millis', int)
+Infinite = float('inf')
+
+GRID_CELL_WIDTH = 25
 
 class Sprite(Enum):
     NONE: 0
@@ -12,6 +15,26 @@ class Direction(Enum):
     RIGHT = 2
     UP = 3
     DOWN = 4
+
+class StaticWorldEntityType(Enum):
+    WALL = 10
+    WALL_DIRECTIONAL_N = 11
+    WALL_DIRECTIONAL_NE = 12
+    WALL_DIRECTIONAL_E = 13
+    WALL_DIRECTIONAL_SE = 14
+    WALL_DIRECTIONAL_S = 15
+    WALL_DIRECTIONAL_SW = 16
+    WALL_DIRECTIONAL_W = 17
+    WALL_DIRECTIONAL_NW = 18
+    WALL_DIRECTIONAL_POINTY_NE = 20
+    WALL_DIRECTIONAL_POINTY_SE = 21
+    WALL_DIRECTIONAL_POINTY_SW = 22
+    WALL_DIRECTIONAL_POINTY_NW = 23
+    CHAIR_RIGHT = 30
+    CHAIR_DOWN = 31
+    CHAIR_LEFT = 32
+    CHAIR_UP = 33
+    BED = 40
 
 class Observable:
     def __init__(self):

@@ -1,7 +1,10 @@
 from typing import Optional, Tuple
 
+from pygame import Rect
+
 from src.core.common import Millis
 from src.core.game_engine import GameEngine
+from src.core.pathfinding.pathfinder import init_global_path_finder
 from src.core.scenes.abstract_scene import AbstractSceneFactory, AbstractScene, SceneTransition
 from src.core.states.game_world_state import GameWorldState
 from src.core.states.game_state import GameState
@@ -15,9 +18,9 @@ class CreatingWorldScene(AbstractScene):
 
     def run_one_frame(self, _time_passed: Millis) -> Optional[SceneTransition]:
 
-        #path_finder = init_global_path_finder()
+        path_finder = init_global_path_finder()
         game_state = self._setup_game_state()
-        #path_finder.set_grid(game_state.pathfinder_wall_grid)
+        path_finder.set_grid(game_state.pathfinder_grid)
 
         game_engine = GameEngine(game_state)
 
@@ -26,5 +29,5 @@ class CreatingWorldScene(AbstractScene):
         return SceneTransition(playing_scene)
 
     def _setup_game_state(self) -> GameState:
-        game_world = GameWorldState([], [], [])
+        game_world = GameWorldState(Rect(-250, -250, 500, 500), [],[], [], [])
         return GameState(game_world, self.camera_size)
