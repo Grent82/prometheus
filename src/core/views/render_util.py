@@ -1,8 +1,10 @@
 from typing import Optional, Tuple, Callable
 
-from pygame import Rect
 import pygame
+from pygame import Rect
 
+from src.core.math import sum_of_vectors
+from src.core.views.image_loading import ImageWithRelativePosition
 
 COLOR_WHITE = (250, 250, 250)
 
@@ -50,6 +52,10 @@ class DrawableArea:
 
     def image(self, image, pos: Tuple[int, int]):
         self.screen.blit(image, self._translate_pos(pos))
+
+    def image_with_relative_pos(self, image_with_relative_position: ImageWithRelativePosition, pos: Tuple[int, int]):
+        translated_pos = sum_of_vectors(pos, image_with_relative_position.position_relative_to_entity)
+        self.image(image_with_relative_position.image, translated_pos)
 
     def _translate_rect(self, rect: Rect):
         translated_pos = self.translate_coordinates((rect[0], rect[1]))
