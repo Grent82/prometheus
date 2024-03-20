@@ -1,5 +1,4 @@
 
-
 from src.core.common import StaticWorldEntityType
 from src.core.entities.game_entity import WorldEntity
 

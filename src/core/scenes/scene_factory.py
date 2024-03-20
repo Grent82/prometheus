@@ -1,5 +1,5 @@
 
-from typing import Optional, Tuple
+from typing import Tuple
 
 from src.core.common import Millis
 from src.core.game_engine import GameEngine

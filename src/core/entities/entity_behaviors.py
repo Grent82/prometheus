@@ -20,8 +20,6 @@ class AbstractNpcMind:
                     time_passed: Millis):
         pass
 
-    # ToDo combine AI behavior here
-
 _npc_mind_constructors: Dict[NpcType, Type[AbstractNpcMind]] = {}
 
 

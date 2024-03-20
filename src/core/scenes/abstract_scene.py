@@ -6,7 +6,6 @@ from src.core.states.game_state import GameState
 from src.core.views.game_ui_view import GameUiView
 
 class SceneTransition:
-    # scene: AbstractScene
     def __init__(self, scene):
         self.scene = scene
 

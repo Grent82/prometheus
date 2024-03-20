@@ -53,3 +53,19 @@ class Observable:
     def notify(self, event):
         for observer in self._observers:
             observer(event)
+
+class PeriodicTimer:
+    def __init__(self, cooldown: Millis):
+        self.cooldown = cooldown
+        self.time_until_next_run = cooldown
+
+    def update_and_check_if_ready(self, time_passed: Millis) -> bool:
+        self.time_until_next_run -= time_passed
+        if self.time_until_next_run <= 0:
+            self.time_until_next_run += self.cooldown
+            return True
+        return False
+
+
+def get_all_directions():
+    return [Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT]

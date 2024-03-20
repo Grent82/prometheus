@@ -1,5 +1,4 @@
-from enum import Enum
-from typing import Dict, List, Tuple, Optional, Union
+from typing import Dict, List, Tuple
 
 import pygame
 from pygame.rect import Rect
