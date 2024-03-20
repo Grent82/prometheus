@@ -1,8 +1,6 @@
 from typing import Dict, List, Optional, Tuple
 
-from src.core.ai.agent import Agent
 from src.core.common import Direction, NpcType, Sprite, StaticWorldEntityType
-from src.core.id_types import GameId, create_id
 from src.core.views.image_loading import Animation, SpriteInitializer, SpriteMapInitializer, SpriteSheet
 
 class StaticWorldEntityData:

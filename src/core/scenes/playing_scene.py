@@ -44,7 +44,7 @@ class PlayingScene(AbstractScene):
         self.world_view.render_world(
             all_entities_to_render = self.game_state.get_all_entities_to_render(),
             camera_world_area = self.game_state.get_camera_world_area(),
-            entities = game_world.entities,
+            entities = game_world.non_player_characters,
             entire_world_area = game_world.entire_world_area
             )
         

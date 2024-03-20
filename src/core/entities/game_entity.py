@@ -1,12 +1,12 @@
-from typing import Tuple, Optional
+from typing import Tuple
 
 from pygame.rect import Rect
 
 from src.core.id_types import GameId
-from src.core.common import Sprite, Direction, Observable
+from src.core.common import *
 
 class WorldEntity:
-    def __init__(self, id:GameId, pos: Tuple[int, int], size: Tuple[int, int], sprite: Sprite, direction=Direction.LEFT, speed:int=0):
+    def __init__(self, id:GameId, pos: Tuple[int, int], size: Tuple[int, int], sprite: Sprite, direction: Direction = Direction.LEFT, speed: int = 0):
         self.id: GameId = id
         self.x: int = pos[0]
         self.y: int = pos[1]

@@ -1,8 +1,11 @@
-
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from src.core.common import NpcType
 
 from typing import Optional
+
 from src.core.ai.agent import Agent
-from src.core.common import NpcType
 from src.core.entities.game_entity import WorldEntity
 from src.core.entities.register_entity import NpcMind
 

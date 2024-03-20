@@ -10,5 +10,5 @@ class GameEngine:
     
     def run_one_frame(self, time_passed: Millis):
 
-        for npc in self.game_state.game_world.npcs:
+        for npc in self.game_state.game_world.non_player_characters:
             npc.npc_mind.control_npc(self.game_state, npc, time_passed)

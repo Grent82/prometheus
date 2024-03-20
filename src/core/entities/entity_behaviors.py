@@ -1,11 +1,13 @@
-
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from src.core.npc import NonPlayerCharacter
+    from src.core.states.game_state import GameState
 
 from typing import Dict, Type
-from src.core.common import Millis, NpcType
-from src.core.entities.game_entity import WorldEntity
-from src.core.npc import NonPlayerCharacter
+
+from src.core.common import *
 from src.core.pathfinding.pathfinder import GlobalPathFinder
-from src.core.states.game_state import GameState
 
 class AbstractNpcMind:
 
@@ -19,7 +21,6 @@ class AbstractNpcMind:
         pass
 
     # ToDo combine AI behavior here
-    
 
 _npc_mind_constructors: Dict[NpcType, Type[AbstractNpcMind]] = {}
 
