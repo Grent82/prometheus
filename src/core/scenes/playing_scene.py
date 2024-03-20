@@ -32,14 +32,14 @@ class PlayingScene(AbstractScene):
     
     def run_one_frame(self, time_passed: Millis) -> Optional[SceneTransition]:
 
-        engine_events = self.game_engine.run_one_frame(time_passed)
+        self.game_engine.run_one_frame(time_passed)
+
         self.ui_view.update(time_passed)
+
         return None
     
     def render(self):
 
-        entity_action_text = None
-        
         game_world = self.game_state.game_world
         self.world_view.render_world(
             all_entities_to_render = self.game_state.get_all_entities_to_render(),
@@ -47,5 +47,5 @@ class PlayingScene(AbstractScene):
             entities = game_world.entities,
             entire_world_area = game_world.entire_world_area
             )
-
+        
         self.ui_view.render()
