@@ -5,9 +5,10 @@ GameIdT = TypeVar('GameIdT', bound=str)
 
 # Define game ID types
 GAME_ID_TYPES = {
-    'Worlds': 0,
-    'Agents': 0,
-    'Npc' : 0
+    'worlds': 0,
+    'agents': 0,
+    'npcs' : 0,
+    'conversations': 0
 }
 
 class GameId:

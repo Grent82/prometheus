@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 
 from src.core.common import Direction, Millis, NpcType, Sprite
 from src.core.entities.entities_trait import RandomWalkTrait
-from src.core.entities.entity_behaviors import AbstractNpcMind, register_npc_behavior
+from src.core.entities.behaviors.entity_behavior import AbstractNpcMind, register_npc_behavior
 from src.core.game_data import NpcData, register_entity_sprite_map, register_npc_data
 from src.core.pathfinding.pathfinder import GlobalPathFinder
 from src.core.views.image_loading import SpriteSheet

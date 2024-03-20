@@ -11,7 +11,7 @@ from src.core.pathfinding.pathfinder import GlobalPathFinder
 
 class AbstractNpcMind:
 
-    def __init__(self, _global_path_finder: GlobalPathFinder):
+    def __init__(self, global_path_finder: GlobalPathFinder):
         pass
 
     def control_npc(self,

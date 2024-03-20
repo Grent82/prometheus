@@ -22,9 +22,33 @@ class WorldEntity:
         self.view_z: int = 0
         self.movement_changed: Observable = None
         self.position_changed: Observable = None
-        #self.is_moving = is_moving # optional
         #self.is_thinking = is_thinking # optional
         #self.is_speaking = is_speaking # optional
+
+    def set_moving_in_dir(self, direction: Direction):
+        if direction is None:
+            raise Exception("Need to provide a valid direciton to move in")
+        self.direction = direction
+        if not self._is_moving:
+            self.notify_movement_observers(True)
+        self._is_moving = True
+
+    def set_not_moving(self):
+        if self._is_moving:
+            self.notify_movement_observers(False)
+        self._is_moving = False
+
+    def notify_movement_observers(self, is_moving: bool):
+        #if self.movement_changed is not None:
+        #    self.movement_changed.notify(is_moving)
+        pass
+
+    def update_movement_animation(self, time_passed: Millis):
+        if self._is_moving:
+            self.update_animation(time_passed)
+
+    def update_animation(self, time_passed):
+        self.movement_animation_progress = (self.movement_animation_progress + float(time_passed) / 700) % 1
 
 
     def check_collision(self, otherRect: Rect):
@@ -35,3 +59,28 @@ class WorldEntity:
 
     def get_position(self):
         return self.x, self.y
+    
+    def set_position(self, new_position: Tuple[int, int]):
+        self.x = new_position[0]
+        self.y = new_position[1]
+        self.pygame_collision_rect.x = self.x
+        self.pygame_collision_rect.y = self.y
+        #self.notify_position_observers()
+    
+    def rotate_right(self):
+        dirs = {
+            Direction.DOWN: Direction.LEFT,
+            Direction.LEFT: Direction.UP,
+            Direction.UP: Direction.RIGHT,
+            Direction.RIGHT: Direction.DOWN
+        }
+        self.direction = dirs[self.direction]
+
+    def rotate_left(self):
+        dirs = {
+            Direction.DOWN: Direction.RIGHT,
+            Direction.RIGHT: Direction.UP,
+            Direction.UP: Direction.LEFT,
+            Direction.LEFT: Direction.DOWN
+        }
+        self.direction = dirs[self.direction]
