@@ -29,3 +29,9 @@ class WorldEntity:
 
     def check_collision(self, otherRect: Rect):
         self.pygame_collision_rect.colliderect(otherRect)
+    
+    def rect(self):
+        return self.x, self.y, 0, 0
+
+    def get_position(self):
+        return self.x, self.y

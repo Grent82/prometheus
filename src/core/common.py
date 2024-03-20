@@ -9,6 +9,13 @@ GRID_CELL_WIDTH = 25
 
 class Sprite(Enum):
     NONE: 0
+    NPC: 1
+
+class NpcType(Enum):
+    MALE: 0
+    FEMALE: 1
+    MALE_CHILD: 2
+    FEMALE_CHILD: 3
 
 class Direction(Enum):
     LEFT = 1

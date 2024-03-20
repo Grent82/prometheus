@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Tuple
 from pygame import Rect
 
 from src.core.entities.game_entity import WorldEntity
-from src.core.entities.world_entites import StaticWorldEntity
+from src.core.entities.static_world_entites import StaticWorldEntity
 
 
 class StaticWorldEntityState:

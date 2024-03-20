@@ -1,0 +1,53 @@
+from src.core.common import Direction, NpcType, Sprite
+from src.core.entities.entity_behaviors import AbstractNpcMind, register_npc_behavior
+from src.core.game_data import NpcData, register_entity_sprite_map, register_npc_data
+from src.core.pathfinding.pathfinder import GlobalPathFinder
+from src.core.views.image_loading import SpriteSheet
+
+
+class NpcMind(AbstractNpcMind):
+    def __init__(self, global_path_finder: GlobalPathFinder):
+        super().__init__(global_path_finder)
+
+
+def register_male_npc():
+    size = (30, 30)
+    sprite = Sprite.NPC
+    npc_type = NpcType.MALE
+    npc_data = NpcData(sprite, size, speed=0.03)
+    register_npc_data(npc_type, npc_data)
+    register_npc_behavior(npc_type, NpcMind)
+
+    sprite_sheet = SpriteSheet("resources/graphics/npc_sprite_sheet.png") # ToDo change me
+    original_sprite_size = (32, 32)
+    scaled_sprite_size = (48, 48)
+    # ToDo set correct values
+    indices_by_dir = {
+        Direction.DOWN: [(0, 4), (1, 4), (2, 4)],
+        Direction.LEFT: [(0, 5), (1, 5), (2, 5)],
+        Direction.RIGHT: [(0, 6), (1, 6), (2, 6)],
+        Direction.UP: [(0, 7), (1, 7), (2, 7)]
+    }
+    # ToDo fix relative
+    register_entity_sprite_map(sprite, sprite_sheet, original_sprite_size, scaled_sprite_size, indices_by_dir, (-8, -16))
+
+def register_female_npc():
+    size = (30, 30)
+    sprite = Sprite.NPC
+    npc_type = NpcType.FEMALE
+    npc_data = NpcData(sprite, size)
+    register_npc_data(npc_type, npc_data, speed=0.03)
+    register_npc_behavior(npc_type, NpcMind)
+
+    sprite_sheet = SpriteSheet("resources/graphics/npc_sprite_sheet.png") # ToDo change me
+    original_sprite_size = (32, 32)
+    scaled_sprite_size = (48, 48)
+    # ToDo set correct values
+    indices_by_dir = {
+        Direction.DOWN: [(0, 4), (1, 4), (2, 4)],
+        Direction.LEFT: [(0, 5), (1, 5), (2, 5)],
+        Direction.RIGHT: [(0, 6), (1, 6), (2, 6)],
+        Direction.UP: [(0, 7), (1, 7), (2, 7)]
+    }
+    # ToDo fix relative
+    register_entity_sprite_map(sprite, sprite_sheet, original_sprite_size, scaled_sprite_size, indices_by_dir, (-8, -16))
