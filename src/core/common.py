@@ -69,3 +69,20 @@ class PeriodicTimer:
 
 def get_all_directions():
     return [Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT]
+
+def get_perpendicular_directions(direction: Direction) -> List[Direction]:
+    if direction == direction.LEFT or direction == direction.RIGHT:
+        return [Direction.UP, Direction.DOWN]
+    else:
+        return [Direction.LEFT, Direction.RIGHT]
+
+
+def get_opposite_direction(direction: Direction) -> Direction:
+    if direction == direction.LEFT:
+        return direction.RIGHT
+    if direction == direction.RIGHT:
+        return direction.LEFT
+    if direction == direction.UP:
+        return direction.DOWN
+    if direction == direction.DOWN:
+        return direction.UP

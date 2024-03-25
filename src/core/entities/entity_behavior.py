@@ -14,10 +14,7 @@ class AbstractNpcMind:
     def __init__(self, global_path_finder: GlobalPathFinder):
         pass
 
-    def control_npc(self,
-                    game_state: GameState,
-                    npc: NonPlayerCharacter,
-                    time_passed: Millis):
+    def control_npc(self, npc: NonPlayerCharacter, game_state: GameState, time_passed: Millis):
         pass
 
 _npc_mind_constructors: Dict[NpcType, Type[AbstractNpcMind]] = {}

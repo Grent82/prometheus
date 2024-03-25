@@ -22,24 +22,7 @@ def get_directions_to_position(from_entity, position) -> Tuple[Direction, Direct
         return dir_from_dx(dx), dir_from_dy(dy)
     else:
         return dir_from_dy(dy), dir_from_dx(dx)
-    
 
-def get_perpendicular_directions(direction: Direction) -> List[Direction]:
-    if direction == direction.LEFT or direction == direction.RIGHT:
-        return [Direction.UP, Direction.DOWN]
-    else:
-        return [Direction.LEFT, Direction.RIGHT]
-
-
-def get_opposite_direction(direction: Direction) -> Direction:
-    if direction == direction.LEFT:
-        return direction.RIGHT
-    if direction == direction.RIGHT:
-        return direction.LEFT
-    if direction == direction.UP:
-        return direction.DOWN
-    if direction == direction.DOWN:
-        return direction.UP
 
 
 def get_position_from_center_position(center_position: Tuple[int, int], size: Tuple[int, int]):

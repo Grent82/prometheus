@@ -4,7 +4,7 @@ from typing import Tuple
 
 from src.core.ai.agent import Agent
 from src.core.common import Direction, NpcType
-from src.core.entities.behaviors.entity_behavior import create_npc_mind
+from src.core.entities.entity_behavior import create_npc_mind
 from src.core.entities.game_entity import WorldEntity
 from src.core.game_data import NON_PLAYER_CHARACTERS, NpcData
 from src.core.id_types import create_id

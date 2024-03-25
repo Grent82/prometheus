@@ -1,15 +1,20 @@
 from enum import Enum
+import random
 from typing import List, Optional
+import uuid
 
 from src.core.ai.agent import Agent
+from src.core.ai.agent_operations import AsyncMessageTask, AsyncMessageTasktype
 from src.core.common import Millis
-from src.core.entities.register_entity import NpcMind
 from src.core.id_types import GameId, create_id
-from src.core.math import get_manhattan_distance
-from src.core.npc import NonPlayerCharacter
-from src.core.pathfinding.pathfinder import GlobalPathFinder
-from src.core.states.game_state import GameState
 from src.core.states.game_world_state import GameWorldState
+
+ACTION_TIMEOUT:Millis = 60 * 10000
+INVITE_TIMEOUT: Millis = 60 * 10000
+INVITE_ACCEPT_PROBABILITY: float = 0.8
+CONVERSATION_DISTANCE: float = 1.69
+AWKWARD_CONVERSATION_TIMEOUT: Millis = 2 * 10000
+MESSAGE_COOLDOWN: Millis = 2000
 
 class ConversationStatus(Enum):
     INVITED: 0
@@ -17,16 +22,24 @@ class ConversationStatus(Enum):
     PARTICIPATING: 2
 
 class ConversationParticipant:
-    def __init__(self, npc: NonPlayerCharacter, invited: Millis, status: ConversationStatus) -> None:
-        self.npc = npc
+    def __init__(self, agent: Agent, invited: Millis, status: ConversationStatus) -> None:
+        self.agent = agent
         self.invited = invited
         self.status = status
+        self.started = Optional[Millis]
+
+class ConversationMessage:
+    def __init__(self, agent: Agent, now: Millis) -> None:
+        self.author = agent
+        self.timestamp = now
 
 class Typing:
-    def __init__(self, npc_id: GameId, message_uuid:str, since: Millis) -> None:
-        self.npc_id = npc_id
+    def __init__(self, agent_id: GameId, message_uuid:str, since: Millis) -> None:
+        self.agent_id = agent_id
         self.message_uuid = message_uuid
         self.since = since
+
+
 
 class Conversation:
     def __init__(self, creator: Agent, created: Millis, participants: List[ConversationParticipant]) -> None:
@@ -34,11 +47,11 @@ class Conversation:
         self.creator = creator
         self.created = created
         self.participants = participants
-        self.is_typing = Optional[Typing]
-        self.last_message = None
+        self.is_typing: Typing = Optional[Typing]
+        self.last_message: ConversationMessage = Optional[ConversationMessage]
 
     @staticmethod
-    def start_conversation(game_world: GameWorldState, invitor: NonPlayerCharacter, invitee: NonPlayerCharacter, invited: Millis):
+    def start(game_world: GameWorldState, invitor: Agent, invitee: Agent, invited: Millis):
         if invitor.id == invitee.id:
             raise Exception("Can't invite yourself to a conversation")
     
@@ -53,7 +66,7 @@ class Conversation:
 
         return conversation.id
 
-    def stop_conversation(self, game_world: GameWorldState, now: Millis):
+    def stop(self, game_world: GameWorldState, now: Millis):
         self.is_typing = None
 
         for agent in game_world.agents:
@@ -65,21 +78,64 @@ class Conversation:
             if c.id == self.id:
                 game_world.conversations.remove(c)
         
-    def leave_conversation(self, game_world: GameWorldState, now: Millis):
-        self.stop_conversation(game_world, now)
+    def leave(self, game_world: GameWorldState, now: Millis):
+        self.stop(game_world, now)
 
-    def update(self, _time_passed: Millis):
 
-        invitor = self.participants[0]
-        invitee = self.participants[1]
+    def update(self, game_world: GameWorldState, npc:Agent, now: Millis):
+        participant = self.get_conversation_participant(npc)
+        other_participant = self.get_other_conversation_participant(npc)
 
-        distance = get_manhattan_distance(invitor.npc.world_entity.get_position(), invitee.npc.world_entity.get_position())
+        #if self.conversation_to_remember:
+        #    todo: load data from db
+
+        if participant.status == ConversationStatus.INVITED:
+            if random.random() < INVITE_ACCEPT_PROBABILITY: # ToDo other participant is human?
+                self.accept_invite(participant)
+            else:
+                self.reject_invite(participant, game_world)
+        elif participant.status == ConversationStatus.WALKING_OVER:
+            if participant.invited + INVITE_TIMEOUT < now:
+                self.leave(game_world, now)
+            
+            # ToDo handle moving to participant
+        
+        elif participant.status == ConversationStatus.PARTICIPATING:
+            started = participant.started
+
+            if self.is_typing and self.is_typing.agent_id == participant.agent.id:
+                msg_uuid = str(uuid.uuid4())
+                self.set_is_typing(Typing(participant.agent.id, msg_uuid, now))
+                participant.agent.agent_operation_handler.process_task(
+                    AsyncMessageTask(participant.agent.id, other_participant.agent.id, self.id, msg_uuid, AsyncMessageTasktype.CONTINUE))
+                
+            elif not self.last_message:
+                is_initiator = self.creator == participant.agent.id
+                awkward_deadline = started + AWKWARD_CONVERSATION_TIMEOUT
+
+                if is_initiator or awkward_deadline < now:
+                    msg_uuid = str(uuid.uuid4())
+                    self.set_is_typing(Typing(participant.agent.id, msg_uuid, now))
+                    participant.agent.agent_operation_handler.process_task(
+                        AsyncMessageTask(participant.agent.id, other_participant.agent.id, self.id, msg_uuid, AsyncMessageTasktype.START))
+                
+            else:
+                if self.last_message.author.id == participant.agent.id:
+                    awkward_deadline = started + AWKWARD_CONVERSATION_TIMEOUT
+                    if now < awkward_deadline:
+                        return
+                else:
+                    message_cooldown = self.last_message.timestamp + MESSAGE_COOLDOWN    
+                    if now < message_cooldown:
+                        return
+                    
+            
 
     def accept_invite(self, participant: ConversationParticipant):
         participant.status = ConversationStatus.WALKING_OVER
     
-    def reject_invite(self, participant: ConversationParticipant, game_world: GameWorldState, now: Millis):
-        self.stop_conversation(game_world, now)
+    def reject_invite(self, game_world: GameWorldState, now: Millis):
+        self.stop(game_world, now)
 
     def set_is_typing(self, message_uuid:str, now: Millis):
         if self.is_typing:
@@ -88,20 +144,20 @@ class Conversation:
 
 
     def is_member_of_conversation(self, agent:Agent):
-        return [npc for npc in self.get_members_of_conversation() if npc.agent.id == agent.id] != None
+        return [a for a in self.get_members_of_conversation() if a.id == agent.id] != None
     
     def get_members_of_conversation(self):
-        return [p.npc for p in self.participants]
+        return [p.agent for p in self.participants]
     
-    def get_conversation_participant(self, npc: NonPlayerCharacter):
+    def get_conversation_participant(self, agent:Agent):
         for p in self.participants:
-            if p.npc.agent.id == npc.agent.id:
+            if p.id == agent.id:
                 return p
         raise Exception("Can't find participant in conversation")
     
-    def get_other_conversation_participant(self, npc: NonPlayerCharacter):
+    def get_other_conversation_participant(self, agent:Agent):
         for p in self.participants:
-            if p.npc.agent.id != npc.agent.id:
+            if p.agent.id != agent.id:
                 return p
         raise Exception("No other participant in conversation")
         

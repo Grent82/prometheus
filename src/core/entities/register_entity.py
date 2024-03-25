@@ -1,12 +1,14 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
+
+from src.core.entities.behaviors.entity_behaviors import TalkingNpcMind
 if TYPE_CHECKING:
     from src.core.npc import NonPlayerCharacter
     from src.core.states.game_state import GameState
 
 from src.core.common import Direction, Millis, NpcType, Sprite
-from src.core.entities.entities_trait import RandomWalkTrait
-from src.core.entities.behaviors.entity_behavior import AbstractNpcMind, register_npc_behavior
+from src.core.entities.entities_traits import RandomWalkTrait, TalkTrait, WalkTrait
+from src.core.entities.entity_behavior import AbstractNpcMind, register_npc_behavior
 from src.core.game_data import NpcData, register_entity_sprite_map, register_npc_data
 from src.core.pathfinding.pathfinder import GlobalPathFinder
 from src.core.views.image_loading import SpriteSheet
@@ -15,10 +17,12 @@ from src.core.views.image_loading import SpriteSheet
 class NpcMind(AbstractNpcMind):
     def __init__(self, global_path_finder: GlobalPathFinder):
         super().__init__(global_path_finder)
-        self.random_walk_trait = RandomWalkTrait()
+        self.talk_trait = TalkTrait()
+        self.walk_trait = WalkTrait(global_path_finder)
 
-    def control_npc(self, game_state: GameState, npc: NonPlayerCharacter, time_passed: Millis):
-        self.random_walk_trait.update(self, npc, game_state, time_passed)
+    def control_npc(self, npc: NonPlayerCharacter, game_state: GameState, time_passed: Millis):
+         self.talk_trait.update(npc, game_state, time_passed)
+         self.walk_trait.move_npc_to_target(game_state, npc, None)
 
 
 def register_male_npc():

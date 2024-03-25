@@ -11,14 +11,13 @@ from src.core.npc import NonPlayerCharacter
 from src.core.states.static_world_states import StaticWorldEntityState
 
 class GameWorldState:
-    def __init__(self, entire_world_area: Rect, static_entites: List[StaticWorldEntity], non_player_characters: List[NonPlayerCharacter], agents:List[Agent], conversations:List[Conversation]):
+    def __init__(self, entire_world_area: Rect, static_entites: List[StaticWorldEntity], non_player_characters: List[NonPlayerCharacter], conversations:List[Conversation]):
         self.id: GameId = create_id('worlds')
 
         self.entire_world_area = entire_world_area
         self.static_entites = StaticWorldEntityState(static_entites, entire_world_area)
 
         self.non_player_characters = non_player_characters
-        self.agents = agents
         self.conversations = conversations
 
         
@@ -27,8 +26,7 @@ class GameWorldState:
         self.non_player_characters.append(npc)
 
     def get_renderable_entities(self) -> List[NonPlayerCharacter]:
-        return [e.world_entity for e in self.non_player_characters]
+        return [npc.world_entity for npc in self.non_player_characters]
     
-    def get_conversation_by_npc(self):
-        participants = [c.participants for c in self.conversations if c.participants]
-        [p for p in participants]
+    def get_agents(self):
+        return [npc.agent for npc in self.non_player_characters]
