@@ -6,8 +6,8 @@ from src.core.id_types import GameId
 from src.core.common import *
 
 class WorldEntity:
-    def __init__(self, id:GameId, pos: Tuple[int, int], size: Tuple[int, int], sprite: Sprite, direction: Direction = Direction.LEFT, speed: int = 0):
-        self.id: GameId = id
+    def __init__(self, id:int, pos: Tuple[int, int], size: Tuple[int, int], sprite: Sprite, direction: Direction = Direction.LEFT, speed: int = 0):
+        self.id: int = id
         self.x: int = pos[0]
         self.y: int = pos[1]
         self.sprite: Sprite = sprite
