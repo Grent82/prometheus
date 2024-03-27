@@ -11,16 +11,13 @@ if TYPE_CHECKING:
     from src.core.states.game_state import GameState
 
 class Trait:
-    def update(self, npc: NonPlayerCharacter, game_state: GameState, time_passed: Millis):
-        raise Exception("Must be overridden by sub-class!")
+    def __init__(self) -> None:
+        pass
     
     
 class RandomWalkTrait(Trait):
     def __init__(self, interval: Millis):
         self._timer = PeriodicTimer(interval)
-
-    def update(self, npc: NonPlayerCharacter, game_state: GameState, time_passed: Millis):
-        pass
 
     def update(self, npc: NonPlayerCharacter, time_passed: Millis):
         if self._timer.update_and_check_if_ready(time_passed):
@@ -32,22 +29,14 @@ class RandomWalkTrait(Trait):
 
 class WalkTrait(Trait):
     def __init__(self, global_path_finder: GlobalPathFinder):
-        self.random_walk_trait = RandomWalkTrait()
         self.pathfinder = EntityPathfinder(global_path_finder)
         self.next_waypoint: Tuple[int, int] = None
         self._reevaluate_next_waypoint_direction_interval = 1000
         self._time_since_reevaluated = self._reevaluate_next_waypoint_direction_interval
         self._time_since_updated_path = 0
-        self._update_path_interval = 0
+        self._update_path_interval = 900
 
-    def update(self, npc: NonPlayerCharacter, game_state: GameState, time_passed: Millis):
-        pass
-
-    def move_npc_to_target(self, game_state: GameState, npc: NonPlayerCharacter, target: NonPlayerCharacter):
-        if self._time_since_updated_path > self._update_path_interval:
-            self._time_since_updated_path = 0
-            self.pathfinder.update_path_towards_target(npc.world_entity, game_state, target.world_entity)
-
+    def update(self, game_state: GameState, npc: NonPlayerCharacter):     
         new_next_waypoint = self.pathfinder.get_next_waypoint_along_path(npc.world_entity)
 
         should_update_waypoint = self.next_waypoint != new_next_waypoint
@@ -66,6 +55,9 @@ class WalkTrait(Trait):
             else:
                 npc.world_entity.set_not_moving()
     
+    def set_target(self, game_state, npc_world_entity: WorldEntity, target_world_entity: WorldEntity):
+        self.pathfinder.update_path_towards_target(game_state, npc_world_entity, target_world_entity) 
+    
     def _move_in_dir(self, enemy_entity: WorldEntity, direction: Direction):
         if direction:
             enemy_entity.set_moving_in_dir(direction)
@@ -73,9 +65,6 @@ class WalkTrait(Trait):
             enemy_entity.set_not_moving()
 
 class TalkTrait(Trait):
-    def __init__(self):
-        pass
-
     def update(self, npc: NonPlayerCharacter, game_state: GameState, time_passed: Millis):
         conversation = self._get_npc_conversation(game_state, npc)
         if conversation:

@@ -6,7 +6,7 @@ import uuid
 from src.core.ai.agent import Agent
 from src.core.ai.agent_operations import AsyncMessageTask, AsyncMessageTasktype
 from src.core.common import Millis
-from src.core.id_types import GameId, create_id
+from src.core.id_types import create_id
 from src.core.states.game_world_state import GameWorldState
 
 ACTION_TIMEOUT:Millis = 60 * 10000
@@ -34,7 +34,7 @@ class ConversationMessage:
         self.timestamp = now
 
 class Typing:
-    def __init__(self, agent_id: GameId, message_uuid:str, since: Millis) -> None:
+    def __init__(self, agent_id: int, message_uuid:str, since: Millis) -> None:
         self.agent_id = agent_id
         self.message_uuid = message_uuid
         self.since = since
@@ -43,7 +43,7 @@ class Typing:
 
 class Conversation:
     def __init__(self, creator: Agent, created: Millis, participants: List[ConversationParticipant]) -> None:
-        self.id = create_id('conversations')
+        self.id = create_id('conversations').id
         self.creator = creator
         self.created = created
         self.participants = participants
@@ -83,8 +83,8 @@ class Conversation:
 
 
     def update(self, game_world: GameWorldState, npc:Agent, now: Millis):
-        participant = self.get_conversation_participant(npc)
-        other_participant = self.get_other_conversation_participant(npc)
+        participant = self._get_conversation_participant(npc)
+        other_participant = self._get_other_conversation_participant(npc)
 
         #if self.conversation_to_remember:
         #    todo: load data from db
@@ -97,8 +97,8 @@ class Conversation:
         elif participant.status == ConversationStatus.WALKING_OVER:
             if participant.invited + INVITE_TIMEOUT < now:
                 self.leave(game_world, now)
-            
-            # ToDo handle moving to participant
+            else:
+                self._move_to_other_participant(game_world, participant.agent, other_participant.agent)
         
         elif participant.status == ConversationStatus.PARTICIPATING:
             started = participant.started
@@ -144,20 +144,25 @@ class Conversation:
 
 
     def is_member_of_conversation(self, agent:Agent):
-        return [a for a in self.get_members_of_conversation() if a.id == agent.id] != None
+        return [a for a in self._get_members_of_conversation() if a.id == agent.id] != None
     
-    def get_members_of_conversation(self):
+    def _get_members_of_conversation(self):
         return [p.agent for p in self.participants]
     
-    def get_conversation_participant(self, agent:Agent):
+    def _get_conversation_participant(self, agent:Agent):
         for p in self.participants:
             if p.id == agent.id:
                 return p
         raise Exception("Can't find participant in conversation")
     
-    def get_other_conversation_participant(self, agent:Agent):
+    def _get_other_conversation_participant(self, agent:Agent):
         for p in self.participants:
             if p.agent.id != agent.id:
                 return p
         raise Exception("No other participant in conversation")
+    
+    def _move_to_other_participant(self, game_world: GameWorldState, agent:Agent, target_agent:Agent):
+        mind = game_world.update_move_target_of_agent(agent, target_agent)
+            
+
         

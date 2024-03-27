@@ -2,7 +2,6 @@ from typing import Tuple
 
 from pygame.rect import Rect
 
-from src.core.id_types import GameId
 from src.core.common import *
 
 class WorldEntity:
@@ -15,15 +14,14 @@ class WorldEntity:
         self._speed: int = speed
         self._speed_multiplier: int = 1
         self._effective_speed: int = speed
-        self._is_moving = True
         self.pygame_collision_rect: Rect = Rect(self.x, self.y, size[0], size[1])
         self.movement_animation_progress: float = 0
         self.visible: bool = True
         self.view_z: int = 0
         self.movement_changed: Observable = None
         self.position_changed: Observable = None
-        #self.is_thinking = is_thinking # optional
-        #self.is_speaking = is_speaking # optional
+
+        self._is_moving = True # ToDo handle states proberly
 
     def set_moving_in_dir(self, direction: Direction):
         if direction is None:

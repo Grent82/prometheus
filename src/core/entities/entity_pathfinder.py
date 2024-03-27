@@ -2,9 +2,9 @@
 from typing import List, Optional, Tuple
 
 from pygame import Rect
-from src.core.common import GRID_CELL_WIDTH, Direction, Millis
+from src.core.common import GRID_CELL_WIDTH, Direction, Millis, get_opposite_direction
 from src.core.entities.game_entity import WorldEntity
-from src.core.math import get_directions_to_position, get_opposite_direction, is_x_and_y_within_distance
+from src.core.math import get_directions_to_position, is_x_and_y_within_distance
 from src.core.pathfinding.pathfinder import GlobalPathFinder
 from src.core.states.game_state import GameState
 
@@ -16,7 +16,7 @@ class EntityPathfinder:
         self.path: List[Tuple[int, int]] = None  # This is expressed in game world coordinates (can be negative)
         self.global_path_finder: GlobalPathFinder = global_path_finder
 
-    def update_path_towards_target(self, agent_entity: WorldEntity, game_state: GameState, target_entity: WorldEntity):
+    def update_path_towards_target(self, game_state: GameState, agent_entity: WorldEntity, target_entity: WorldEntity):
         agent_cell = _translate_world_position_to_cell(agent_entity.get_position(),
                                                        game_state.game_world.entire_world_area)
         target_cell = _translate_world_position_to_cell(target_entity.get_position(),
@@ -30,8 +30,8 @@ class EntityPathfinder:
             # Note: Cells are expressed in non-negative values (and need to be translated to game world coordinates)
             path = [_translate_cell_to_world_position(cell, game_state.game_world.entire_world_area) for cell in
                     path_with_cells]
-            if DEBUG_RENDER_PATHFINDING:
-                _add_visual_lines_along_path(game_state, path)
+            #if DEBUG_RENDER_PATHFINDING:
+            #    _add_visual_lines_along_path(game_state, path)
             self.path = path
         else:
             self.path = None

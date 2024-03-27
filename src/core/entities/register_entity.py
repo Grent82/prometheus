@@ -1,7 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from src.core.entities.behaviors.entity_behaviors import TalkingNpcMind
 if TYPE_CHECKING:
     from src.core.npc import NonPlayerCharacter
     from src.core.states.game_state import GameState
@@ -19,10 +18,12 @@ class NpcMind(AbstractNpcMind):
         super().__init__(global_path_finder)
         self.talk_trait = TalkTrait()
         self.walk_trait = WalkTrait(global_path_finder)
+        self.random_walk_trait = RandomWalkTrait(900)
 
     def control_npc(self, npc: NonPlayerCharacter, game_state: GameState, time_passed: Millis):
          self.talk_trait.update(npc, game_state, time_passed)
-         self.walk_trait.move_npc_to_target(game_state, npc, None)
+         self.walk_trait.update(game_state, npc)
+         self.random_walk_trait.update(npc, time_passed)
 
 
 def register_male_npc():
