@@ -1,13 +1,19 @@
-from enum import Enum
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from src.core.states.game_world_state import GameWorldState
+
 import random
-from typing import List, Optional
 import uuid
+
+from typing import List, Optional
+from enum import Enum
 
 from src.core.ai.agent import Agent
 from src.core.ai.agent_operations import AsyncMessageTask, AsyncMessageTasktype
 from src.core.common import Millis
 from src.core.id_types import create_id
-from src.core.states.game_world_state import GameWorldState
+
 
 ACTION_TIMEOUT:Millis = 60 * 10000
 INVITE_TIMEOUT: Millis = 60 * 10000
@@ -162,7 +168,7 @@ class Conversation:
         raise Exception("No other participant in conversation")
     
     def _move_to_other_participant(self, game_world: GameWorldState, agent:Agent, target_agent:Agent):
-        mind = game_world.update_move_target_of_agent(agent, target_agent)
+        game_world.update_move_target_of_agent(agent, target_agent)
             
 
         

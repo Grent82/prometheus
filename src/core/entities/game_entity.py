@@ -37,9 +37,8 @@ class WorldEntity:
         self._is_moving = False
 
     def notify_movement_observers(self, is_moving: bool):
-        #if self.movement_changed is not None:
-        #    self.movement_changed.notify(is_moving)
-        pass
+        if self.movement_changed is not None:
+            self.movement_changed.notify(is_moving)
 
     def update_movement_animation(self, time_passed: Millis):
         if self._is_moving:

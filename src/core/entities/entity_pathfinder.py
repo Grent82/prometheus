@@ -1,22 +1,23 @@
-
-from typing import List, Optional, Tuple
+from typing import TYPE_CHECKING, List, Optional, Tuple
+if TYPE_CHECKING:
+    from src.core.states.game_state import GameState
 
 from pygame import Rect
+
 from src.core.common import GRID_CELL_WIDTH, Direction, Millis, get_opposite_direction
 from src.core.entities.game_entity import WorldEntity
 from src.core.math import get_directions_to_position, is_x_and_y_within_distance
 from src.core.pathfinding.pathfinder import GlobalPathFinder
-from src.core.states.game_state import GameState
 
 DEBUG_RENDER_PATHFINDING = False
 DEBUG_PATHFINDER_INTERVAL = 900
 
 class EntityPathfinder:
     def __init__(self, global_path_finder: GlobalPathFinder):
-        self.path: List[Tuple[int, int]] = None  # This is expressed in game world coordinates (can be negative)
+        self.path: List[Tuple[int, int]] = None
         self.global_path_finder: GlobalPathFinder = global_path_finder
 
-    def update_path_towards_target(self, game_state: GameState, agent_entity: WorldEntity, target_entity: WorldEntity):
+    def update_path_towards_target(self, game_state, agent_entity: WorldEntity, target_entity: WorldEntity):
         agent_cell = _translate_world_position_to_cell(agent_entity.get_position(),
                                                        game_state.game_world.entire_world_area)
         target_cell = _translate_world_position_to_cell(target_entity.get_position(),
@@ -65,7 +66,7 @@ class EntityPathfinder:
         return None
 
     @staticmethod
-    def get_dir_towards_considering_collisions(game_state: GameState, agent_entity: WorldEntity,
+    def get_dir_towards_considering_collisions(game_state, agent_entity: WorldEntity,
                                                destination: Tuple[int, int]) -> Optional[Direction]:
         directions = get_directions_to_position(agent_entity, destination)
         if directions:
@@ -82,7 +83,7 @@ class EntityPathfinder:
         return None
 
 
-def _would_collide_with_dir(direction: Direction, agent_entity: WorldEntity, game_state: GameState):
+def _would_collide_with_dir(direction: Direction, agent_entity: WorldEntity, game_state):
     future_time = Millis(100)
     future_pos = agent_entity.get_new_position_according_to_other_dir_and_speed(direction, future_time)
     future_pos_within_world = game_state.game_world.get_within_world(

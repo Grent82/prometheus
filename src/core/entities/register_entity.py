@@ -25,6 +25,9 @@ class NpcMind(AbstractNpcMind):
          self.walk_trait.update(game_state, npc)
          self.random_walk_trait.update(npc, time_passed)
 
+    def get_walk_trait(self) -> WalkTrait:
+        return self.walk_trait
+
 
 def register_male_npc():
     size = (30, 30)

@@ -30,5 +30,5 @@ class CreatingWorldScene(AbstractScene):
 
     def _setup_game_state(self) -> GameState:
         # ToDo
-        game_world = GameWorldState(Rect(-250, -250, 500, 500), [],[], [], [])
+        game_world = GameWorldState(Rect(-250, -250, 500, 500), [],[], [])
         return GameState(game_world, self.camera_size)
